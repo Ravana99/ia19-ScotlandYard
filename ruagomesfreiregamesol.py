@@ -45,23 +45,21 @@ def astar(model, init, goal):
     init_node = Node(index=init[0])
     goal_node = Node(index=goal[0])
 
-    open_nodes = []
-    closed_nodes = []
+    model_length = len(model)
+    isopen = [(False, math.inf)] * model_length
+    isclosed = [False] * model_length
 
-    open_nodes.append(init_node)
+    open_nodes = []
+    heapq.heapify(open_nodes)
+
+    heapq.heappush(open_nodes, init_node)
+    isopen[init_node.index] = (True, init_node.g)
 
     while len(open_nodes) > 0:
 
-        curr_node = open_nodes[0]
-        curr_index = 0
-        for index, item in enumerate(open_nodes):
-            if item.f < curr_node.f:
-                curr_node = item
-                curr_index = index
-
-        # Pop current off open list, add to closed list
-        open_nodes.pop(curr_index)
-        closed_nodes.append(curr_node)
+        curr_node = heapq.heappop(open_nodes)
+        isopen[curr_node.index] = (False, curr_node.g) 
+        isclosed[curr_node.index] = True
 
         # Test (just before expansion)
         if curr_node == goal_node:
@@ -83,20 +81,18 @@ def astar(model, init, goal):
 
         for child in children:
 
-            for closed_child in closed_nodes:
-                if child == closed_child:
-                    continue
+            if isclosed[child.index]:
+                continue
 
             child.g = curr_node.g + 1
             child.h = 0 # Heuristic missing
             child.f = child.g + child.h
 
-            for open_node in open_nodes:
-                if child == open_node and child.g > open_node.g:
-                    continue
+            if isopen[child.index][0] and child.g > isopen[child.index][1]:
+                continue
 
-            # Add the child to the open list
-            open_nodes.append(child)
+            heapq.heappush(open_nodes, child)
+            isopen[child.index] = (False, child.g)
 
 
 # // A* (star) Pathfinding
