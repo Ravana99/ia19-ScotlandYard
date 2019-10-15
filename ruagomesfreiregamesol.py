@@ -1,3 +1,5 @@
+# Group 18 - Joao Fonseca 89476, Tomas Lopes 89552
+
 import math
 import pickle
 import time
@@ -37,15 +39,15 @@ class SearchProblem:
 
     def search(self, init, limitexp=2000, limitdepth=10, tickets=[math.inf, math.inf, math.inf]):
 
-        invU = invertModel(self.model)
-        heuristic = BFS(invU, self.goal[0], tickets)
+        inverted_model = invertModel(self.model)
+        heuristic = BFS(inverted_model, self.goal[0], tickets)
         lst = astar(self.model, init, self.goal, heuristic, tickets, limitexp, limitdepth)
         return lst
 
     def getHeur(self, tickets):
 
-        invU = invertModel(self.model)
-        return BFS(invU, self.goal[0], tickets)
+        inverted_model = invertModel(self.model)
+        return BFS(inverted_model, self.goal[0], tickets)
 
 
 def invertModel(model):
@@ -128,6 +130,11 @@ def astar(model, init, goal, heuristic, tickets, limitexp, limitdepth):
         if curr_node.g >= limitdepth:
             continue
 
+        exp_count += 1
+
+        if exp_count >= limitexp:
+            continue
+
         children = []
 
         for el in model[curr_node.index]:
@@ -150,7 +157,3 @@ def astar(model, init, goal, heuristic, tickets, limitexp, limitdepth):
 
             heapq.heappush(open_nodes, child)
             isopen[child.index] = (False, child.g)
-            exp_count += 1
-
-            if exp_count > limitexp:
-                return False
