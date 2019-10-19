@@ -25,19 +25,16 @@ def plotpath(P,coords):
         plt.axis('off')
         fig = plt.gcf()
         fig.set_size_inches(1.*18.5, 1.*10.5)
-        #fig.savefig('test2png.png', dpi=100)   
+        fig.savefig('test2png.png', dpi=100)   
         plt.show()
         
 def validatepath(oP,oI,U,tickets=[25,25,25]): 
-        print(oP)
         if not oP:
                 return False
         P = copy.deepcopy(oP)
         I = copy.copy(oI)
         mtickets = copy.copy(tickets)
 
-        print(I)
-        print(P[0][1])
         if I!=P[0][1]:
                 print('path does not start in the initial state')
                 return False
@@ -45,7 +42,6 @@ def validatepath(oP,oI,U,tickets=[25,25,25]):
         
         for tt in P:
                 for agind,ag in enumerate(tt[1]):
-                        #print(ag)
                         st = I[agind]
                         if mtickets[tt[0][agind]]==0:
                                 print(tt)
@@ -65,7 +61,6 @@ def validatepath(oP,oI,U,tickets=[25,25,25]):
                         print(tt)
                         print('there is more than one police in the same location')
                         return False
-        print(oP)
         return True
 
 tinittotal = time.process_time()
@@ -77,7 +72,7 @@ tinit = time.process_time()
 I = [30]
 nn = SP.search(I,limitexp = 2000)
 tend = time.process_time()
-print("%.1fms"%((tend-tinit)*1000))
+print("%.5fms"%((tend-tinit)*1000))
 if validatepath(nn,I,U):   
         print("path")
         print(nn)
@@ -92,7 +87,7 @@ tinit = time.process_time()
 I = [30]
 nn = SP.search(I,limitexp = 2000, tickets = [5,5,2])
 tend = time.process_time()
-print("%.1fms"%((tend-tinit)*1000))
+print("%.5fms"%((tend-tinit)*1000))
 if validatepath(nn,I,U, tickets = [5,5,2]):
         print("path")
         print(nn)
@@ -107,7 +102,7 @@ tinit = time.process_time()
 I = [1,3,7]
 nn = SP.search(I,limitexp = 2000)
 tend = time.process_time()
-print("%.1fms"%((tend-tinit)*1000))
+print("%.5fms"%((tend-tinit)*1000))
 if validatepath(nn,I,U):
         print("path")
         print(nn)
@@ -122,7 +117,7 @@ tinit = time.process_time()
 I = [30,40,109]
 nn = SP.search(I,limitexp = 2000)
 tend = time.process_time()
-print("%.1fms"%((tend-tinit)*1000))
+print("%.5fms"%((tend-tinit)*1000))
 if validatepath(nn,I,U):
         print("path")
         print(nn)
@@ -131,13 +126,13 @@ else:
         print("invalid path")
         
 print("\n(4 val) Exercise 4 - Three agents, Limits")
-print("Init [30,40,109] Goal [61,60,71]")
+print("Init [30,40,109] Goal [63,61,70]")
 SP = SearchProblem(goal = [63,61,70], model = U, auxheur=coords)
 tinit = time.process_time()
 I = [30,40,109]
 nn = SP.search(I,limitexp = 3000, limitdepth = 10, tickets = [5,20,2])
 tend = time.process_time()
-print("%.1fms"%((tend-tinit)*1000))
+print("%.5fms"%((tend-tinit)*1000))
 if validatepath(nn,I,U, tickets = [5,20,2]):
         print("path")
         print(nn)
@@ -146,13 +141,13 @@ else:
         print("invalid path")
 
 print("\n(4 val) Exercise 5 - Three agents, Limits, Any-Order")
-print("Init [30,40,109] Goal [61,60,71]")
+print("Init [30,40,109] Goal [63,61,70]")
 SP = SearchProblem(goal = [63,61,70], model = U, auxheur=coords)
 tinit = time.process_time()
 I = [30,40,109]
 nn = SP.search(I,limitexp = 3000, limitdepth = 10, tickets = [5,20,2], anyorder = True)
 tend = time.process_time()
-print("%.1fms"%((tend-tinit)*1000))
+print("%.5fms"%((tend-tinit)*1000))
 if validatepath(nn,I,U, tickets = [5,20,2]):
         print("path")
         print(nn)
@@ -161,6 +156,6 @@ else:
         print("invalid path")
         
 tendtotal = time.process_time()
-print("Total time %.1fms"%((tendtotal-tinittotal)*1000))
+print("\nTotal time %.5fms"%((tendtotal-tinittotal)*1000))
 
 
