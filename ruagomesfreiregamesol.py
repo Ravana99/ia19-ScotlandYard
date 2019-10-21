@@ -9,12 +9,11 @@ exp_count = 0
 
 class Node:
 
-    def __init__(self, parent=None, transport=None, index=None, tickets=[math.inf, math.inf, math.inf], distance = 0):
+    def __init__(self, parent=None, transport=None, index=None, tickets=[math.inf, math.inf, math.inf]):
         self.parent = parent        # Parent node
         self.transport = transport  # Transport used to get to the node
         self.index = index          # Node number
         self.tickets = tickets      # Tickets available while on this node
-        self.distance = distance    # Euclidean distance to goal node (if anyorder: nearest goal node)
 
         # Heuristic related function values
         self.f = 0          
@@ -24,14 +23,9 @@ class Node:
     def __eq__(self, other):
         return self.index == other.index
 
-    # In the algorithm, the nodes are stored in a heap that takes into consideration the f value of each node.
-    # In case of a tie, the algorithm chooses the node that is closest (in euclidean distance) to the goal node.
+    # In the algorithm, the nodes are stored in a heap that takes into consideration the f value of each node
     def __lt__(self, other):
-        if self.f < other.f:
-            return True
-        elif self.f == other.f and self.distance < other.distance:
-            return True
-        return False
+        return self.f < other.f
 
 
 class SearchProblem:
@@ -59,7 +53,8 @@ class SearchProblem:
         # The "solution" list stores a list of n paths, each one storing one agent's path to the goal
         solution = [None] * nagents
         found = astar(self.model, init, self.goal, heuristics, tickets, limitexp,
-                      limitdepth, self.auxheur, anyorder, 0, solution)
+                      limitdepth, anyorder, 0, solution)
+        print(exp_count)
         exp_count = 0
         if found:
             solution = mergeSolutions(solution)    # Converts solution to required format
@@ -67,8 +62,8 @@ class SearchProblem:
         else:
             return []    # No solution found
 
-# Auxiliary function for heuristic calculations. This function calculates the minimum distance from
-# all possible vertices to a certain target vertex by doing a Breadth-First Search,
+# Auxiliary function for heuristic calculations. This function calculates the minimum number of
+# turns needed from all possible vertices to a certain target vertex by doing a Breadth-First Search,
 # disregarding ticket limits and path conflicts, creating an admissible heuristic.
 def BFS(model, init_index):
 
@@ -105,7 +100,7 @@ def BFS(model, init_index):
 # no path conflicts, it backtracks to the previous agent, which then tries to find an alternative path.
 # Returns true if it's able to find a viable path for all agents, storing each individual path in the
 # list "solution", or false if otherwise.
-def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, auxheur, anyorder, agent, solution):
+def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, anyorder, agent, solution):
 
     nagents = len(init)
     global exp_count
@@ -132,8 +127,7 @@ def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, auxheur,
     model_length = len(model)
     isopen = [(False, math.inf)] * model_length    # Auxiliary list used to check if a node is open
 
-    # Heap used to store open nodes. Popping a node will yield the open node with the smallest h value,
-    # and in case of a tie, it chooses the node with the smallest distance to target
+    # Heap used to store open nodes; popping a node will yield the open node with the smallest f value
     open_nodes = []
     heapq.heapify(open_nodes)    
 
@@ -187,7 +181,7 @@ def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, auxheur,
 
                     # Tries to find the next agent's path
                     nextagent = astar(model, init, goal, heuristics, curr_node.tickets, limitexp,
-                                      limitdepth, auxheur, anyorder, agent+1, solution)
+                                      limitdepth, anyorder, agent+1, solution)
                     
                     # Successfully found viable paths for all subsequent agents
                     if nextagent:
@@ -213,13 +207,6 @@ def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, auxheur,
             child.h = heuristic[child.index]
             child.f = child.g + child.h
 
-            mindistance = distanceToTargetSquared(auxheur[child.index-1], auxheur[goal_nodes[0].index-1])
-            # In case any order is valid, saves the distance to only the nearest goal node
-            for i in range(1, len(goal_nodes)):
-                mindistance = min(mindistance, distanceToTargetSquared(auxheur[child.index-1], 
-                                                                       auxheur[goal_nodes[i].index-1]))
-            child.distance = mindistance
-
             # Optimization - ignores alternate paths to the same node that take more turns
             if isopen[child.index][0] and child.g > isopen[child.index][1]:
                 continue
@@ -238,11 +225,7 @@ def getMinHeuristic(heuristics):
         for j in range(len(heuristics)):
             aux = min(aux, heuristics[j][i])
         lst.append(aux)
-    return lst        
-
-# Calculates euclidean distance (squared) between two nodes
-def distanceToTargetSquared(source, target):
-    return (source[0]+target[0])*(source[0]+target[0]) + (source[1]+target[1])*(source[1]+target[1])
+    return lst
 
 # Checks if multiple agents are on the same node on the same turn to determine whether a newly calculated path is valid
 def hasConflicts(agent, path, solution):

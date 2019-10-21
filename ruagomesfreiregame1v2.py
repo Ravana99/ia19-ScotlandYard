@@ -2,7 +2,7 @@ import pickle
 import copy
 import matplotlib.pyplot as plt
 import time
-#import cProfile
+import cProfile
 from ruagomesfreiregamesol import SearchProblem
 
 with open("coords.pickle", "rb") as fp:   # Unpickling
@@ -170,6 +170,9 @@ tinit = time.process_time()
 I = [2, 10, 70]
 #x = """SP.search(I,limitexp = 30000, limitdepth = 10, tickets = [15, 10, 8])"""
 #cProfile.run(x) # to profile time
+#tend = time.process_time()
+#print("%.1fms"%((tend-tinit)*1000))
+#tinit = time.process_time()
 nn = SP.search(I,limitexp = 30000, limitdepth = 10, tickets = [15, 10, 8])
 tend = time.process_time()
 print("%.1fms"%((tend-tinit)*1000))
