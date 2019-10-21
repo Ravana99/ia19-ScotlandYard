@@ -5,6 +5,7 @@ import pickle
 import time
 import heapq
 
+exp_count = 0
 
 class Node:
 
@@ -44,6 +45,7 @@ class SearchProblem:
     def search(self, init, limitexp=2000, limitdepth=10, tickets=[math.inf, math.inf, math.inf], anyorder = False):
         nagents = len(init)    # Number of agents
         heuristics = [None] * nagents
+        global exp_count
 
         # Calculates h value for each vertex, for each agent
         for i in range(nagents):
@@ -56,13 +58,14 @@ class SearchProblem:
 
         # The "solution" list stores a list of n paths, each one storing one agent's path to the goal
         solution = [None] * nagents
-        found = astar(self.model, init, self.goal, heuristics, tickets, limitexp, 0,
+        found = astar(self.model, init, self.goal, heuristics, tickets, limitexp,
                       limitdepth, self.auxheur, anyorder, 0, solution)
+        exp_count = 0
         if found:
             solution = mergeSolutions(solution)    # Converts solution to required format
             return solution
         else:
-            return []
+            return []    # No solution found
 
 # Auxiliary function for heuristic calculations. This function calculates the minimum distance from
 # all possible vertices to a certain target vertex by doing a Breadth-First Search,
@@ -102,9 +105,10 @@ def BFS(model, init_index):
 # no path conflicts, it backtracks to the previous agent, which then tries to find an alternative path.
 # Returns true if it's able to find a viable path for all agents, storing each individual path in the
 # list "solution", or false if otherwise.
-def astar(model, init, goal, heuristics, tickets, limitexp, exp_count, limitdepth, auxheur, anyorder, agent, solution):
+def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, auxheur, anyorder, agent, solution):
 
     nagents = len(init)
+    global exp_count
 
     # Stopping condition
     if agent == nagents:    
@@ -182,7 +186,7 @@ def astar(model, init, goal, heuristics, tickets, limitexp, exp_count, limitdept
                     solution[agent] = path
 
                     # Tries to find the next agent's path
-                    nextagent = astar(model, init, goal, heuristics, curr_node.tickets, limitexp, exp_count,
+                    nextagent = astar(model, init, goal, heuristics, curr_node.tickets, limitexp,
                                       limitdepth, auxheur, anyorder, agent+1, solution)
                     
                     # Successfully found viable paths for all subsequent agents
