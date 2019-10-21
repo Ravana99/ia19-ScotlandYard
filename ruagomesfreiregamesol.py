@@ -54,7 +54,6 @@ class SearchProblem:
         solution = [None] * nagents
         found = astar(self.model, init, self.goal, heuristics, tickets, limitexp,
                       limitdepth, anyorder, 0, solution)
-        print(exp_count)
         exp_count = 0
         if found:
             solution = mergeSolutions(solution)    # Converts solution to required format
