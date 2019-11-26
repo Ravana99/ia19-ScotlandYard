@@ -206,7 +206,7 @@ def astar(model, init, goal, heuristics, tickets, limitexp, limitdepth, anyorder
             child.h = heuristic[child.index]
             child.f = child.g + child.h
 
-            # Ignores alternate paths to the same node that take more turns (may come back to them later)
+            # Optimization - ignores alternate paths to the same node that take more turns
             if isopen[child.index][0] and child.g > isopen[child.index][1]:
                 continue
 
