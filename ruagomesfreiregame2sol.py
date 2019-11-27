@@ -14,12 +14,9 @@ class LearningAgent:
 		# define this function
 		self.nS = nS
 		self.nA = nA
-		self.qtable = []
-		self.nvisits = []
-		for i in range(nS):
-			self.qtable.append([0]*nA)
-		for i in range(nS):
-			self.nvisits.append([0]*nA)
+
+		self.qtable = [[0]*nA for i in range(nS)]
+		self.nvisits = [[0]*nA for i in range(nS)]
 		self.gamma = 1
 		self.nactions = [-1]*nS
 		  
@@ -28,8 +25,7 @@ class LearningAgent:
 	# st - is the current state        
 	# aa - is the set of possible actions
 	# for a given state they are always given in the same order
-	# returns
-	# a - the index to the action in aa
+	# returns the index to the action in aa
 	def selectactiontolearn(self,st,aa):
 		# define this function
 		# print("select one action to learn better")
@@ -67,18 +63,18 @@ class LearningAgent:
 	def learn(self,ost,nst,a,r):
 		# define this function
 		#print("learn something from this data")
+		#if self.nvisits[ost][a] == 0:
+			#self.qtable[ost][a] = r
 		self.nvisits[ost][a] += 1
 		alphan = 1/(self.nvisits[ost][a]+1)
 		amax = self.qtable[nst][0]
-		#imax = 0
 		if self.nactions[nst] == -1:
 			amax = 0
 		else:	
 			for i in range(1, self.nactions[nst]):
 				if amax < self.qtable[nst][i]:
 					amax = self.qtable[nst][i]
-					#imax = i
-		
+
 		self.qtable[ost][a] = (1-alphan)*self.qtable[ost][a] + alphan*(r+self.gamma*amax)
 
 		return
