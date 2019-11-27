@@ -65,6 +65,8 @@ for nrep in range(0,NREP):
         # in this phase your agent will learn about the world
         # after these steps the agent will be tested
         runagent(A, T, R, I = 1, learningphase=True, nlearn = 500)
+        #print(A.nactions)
+        #print(A.qtable)
         print("# testing phase")
         # in this phase your agent will execute what it learned in the world
         # the total reward obtained needs to be the optimal
