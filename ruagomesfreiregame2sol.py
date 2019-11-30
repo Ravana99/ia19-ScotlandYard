@@ -15,9 +15,9 @@ class LearningAgent:
 
 		self.qtable = [[0]*nA for i in range(nS)]
 		self.nvisits = [[0]*nA for i in range(nS)]
-		self.gamma = 1
+		self.gamma = 0.999
 		self.nactions = [-1]*nS
-		self.epsilon = 0.5
+		self.epsilon = 0.7
 
 		  
 	
@@ -29,10 +29,14 @@ class LearningAgent:
 	def selectactiontolearn(self,st,aa):
 		if self.nactions[st] == -1:
 			self.nactions[st] = len(aa)
-		if random.random()>=self.epsilon:
-			return self.selectactiontoexecute(st,aa)
+
+		self.epsilon = max(0.1, 0.9999*(self.epsilon))
+
+		if random.random()<self.epsilon:
+			return random.randint(0, self.nactions[st]-1)	
 		else:
-			return random.randint(0, self.nactions[st]-1)
+			return self.selectactiontoexecute(st,aa)
+			
 
 	# Select one action, used when evaluating
 	# st - is the current state        
@@ -60,14 +64,15 @@ class LearningAgent:
 	# r - reward obtained
 	def learn(self,ost,nst,a,r):
 
-		#KEEP??
-		if self.nvisits[ost][a] == 0:
-			self.qtable[ost][a] = r
+		for i in range(self.nA):
+			if self.nvisits[ost][i] == 0:
+				self.qtable[ost][i] = r
 
 		self.nvisits[ost][a] += 1
 
-
 		alphan = 1/(self.nvisits[ost][a]+1)
+
+		#self.gamma = min(0.99, 1 - 0.98 * (1 - self.gamma))
 
 		amax = self.qtable[nst][0]
 		if self.nactions[nst] == -1:
