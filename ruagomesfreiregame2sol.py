@@ -32,7 +32,7 @@ class LearningAgent:
 		if self.nactions[st] == -1:
 			self.nactions[st] = len(aa)
 
-		self.epsilon -= 1/(self.nS*self.nA*self.nA)
+		self.epsilon = max(0.1, (self.epsilon - 1/(self.nS*self.nA*self.nA)))
 
 		if random.random()<self.epsilon:
 			return random.randint(0, self.nactions[st]-1)	

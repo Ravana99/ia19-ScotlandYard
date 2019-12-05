@@ -19,7 +19,10 @@ def runagent(A, T, R, I = 1, learningphase=True, nlearn = 1000, ntest = 100):
                 else:
                         a = A.selectactiontoexecute(st,aa) #a -> action to execute
                 try:
-                        nst = T[st][0][a] # nst -> next state using the selected action a
+                        if random.uniform(0, 1) < 0.1:
+                                nst = random.choice(T[st][0])
+                        else:
+                                nst = T[st][0][a] # nst -> next state using the selected action a
                 except:
                         print(st,a)
                 r = R[st] #r -> reward associated with the current state st
