@@ -1,7 +1,7 @@
 import pickle
 import random
 import matplotlib.pyplot as plt
-from A018 import *
+from ruagomesfreiregame2sol import *
 
 def runagent(A, T, R, I = 1, learningphase=True, nlearn = 1000, ntest = 100):
 
@@ -43,7 +43,7 @@ def runagent(A, T, R, I = 1, learningphase=True, nlearn = 1000, ntest = 100):
 # the final grades are based on the average on all of them
 
 NIT = 5
-NREP = 100 #number of times the whole process will be executed
+NREP = 10 #number of times the whole process will be executed
 hits0 = 0
 hits1 = 0
 hits2 = 0
@@ -146,6 +146,6 @@ print("% Hits exemplo 1 teste 1: " + str(hits0*100/NREP) + "%")
 print("Hits exemplo 1 teste 2: " +  str(hits1) + " em " + str(NREP))
 print("% Hits exemplo 1 teste 2: " + str(hits1*100/NREP) + "%")
 print("Hits exemplo 2 teste 1: " +  str(hits2) + " em " + str(NREP))
-print("% Hits exemplo 2 teste 1: " + str(hits2*100/NREP))
+print("% Hits exemplo 2 teste 1: " + str(hits2*100/NREP) + "%")
 print("Hits exemplo 2 teste 2: " +  str(hits3) + " em " + str(NREP))
-print("% Hits exemplo 2 teste 2: " + str(hits3*100/NREP))
+print("% Hits exemplo 2 teste 2: " + str(hits3*100/NREP) + "%")

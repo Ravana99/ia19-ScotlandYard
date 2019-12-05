@@ -44,19 +44,20 @@ class LearningAgent:
 	# st - is the current state        
 	# aa - is the set of possible actions
 	# for a given state they are always given in the same order
-	# returns
-	# imax - the index to the action in aa
+	# returns the index to the action in aa
 	def selectactiontoexecute(self,st,aa):
 		if self.nactions[st] == -1:
 			self.nactions[st] = len(aa)
+		maxlist = []
 		amax = self.qtable[st][0]
-		imax = 0
 		for i in range(1, self.nactions[st]):
 			if amax < self.qtable[st][i]:
 				amax = self.qtable[st][i]
-				imax = i
+		for i in range(0, self.nactions[st]):
+			if amax == self.qtable[st][i]:
+				maxlist.append(i)
 
-		return imax
+		return maxlist[random.randint(0, len(maxlist)-1)]
 
 
 	# this function is called after every action
